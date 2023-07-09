@@ -1,0 +1,154 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="2023.1">
+  <Nodes>
+    <Node ToolID="1">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.TextInput.TextInput">
+        <Position x="126" y="54" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <NumRows value="1" />
+          <Fields>
+            <Field name="Infolder" />
+            <Field name="Outpath" />
+            <Field name="File name" />
+          </Fields>
+          <Data>
+            <r>
+              <c>C:\Users\pc\Desktop\Alteryx project\Input</c>
+              <c>C:\Users\pc\Desktop\Alteryx project\Output\</c>
+              <c>RE_Output</c>
+            </r>
+          </Data>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxTextInput" />
+    </Node>
+    <Node ToolID="2">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
+        <Position x="234" y="54" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <FormulaFields>
+            <FormulaField expression="[File name]+&quot;P&quot;+iif(DateTimeDay(DateTimeNow())&gt;4,&quot;0&quot;+ToString(DateTimeMonth(DateTimeAdd(DateTimeNow(),0,&quot;Month&quot;))),&quot;0&quot;+ToString(DateTimeMonth(DateTimeAdd(DateTimeNow(),-1,&quot;Month&quot;))))+&quot; &quot;+DateTimeFormat(DateTimeNow(),&quot;%d%m%y %H%M%S&quot;)" field="File1" size="1073741823" type="V_WString" />
+            <FormulaField expression="[Infolder]+&quot;\&quot;+[File name]+&quot;.xlsx&quot;" field="In Path" size="1073741823" type="V_WString" />
+            <FormulaField expression="&quot;C:\Users\pc\Desktop\Alteryx project\Output\&quot;+DateTimeFormat(DateTimeNow(),&quot;%Y&quot;)+&quot;\&quot;" field="Out Dir" size="1073741823" type="V_WString" />
+            <FormulaField expression="&quot;C:\Users\pc\Desktop\Alteryx project\Output\&quot;+DateTimeFormat(DateTimeNow(),&quot;%Y&quot;)+&quot;\&quot;+DateTimeFormat(DateTimeNow(),&quot;%d-%m-%Y&quot;)+&quot;\&quot;" field="Out Dir1" size="1073741823" type="V_WString" />
+            <FormulaField expression="[Out Dir1]+[File1]+&quot;.xlsx&quot;" field="Output Path" size="1073741823" type="V_WString" />
+          </FormulaFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>File1 = [File name]+"P"+iif(DateTimeDay(DateTimeNow())&gt;4,"0"+ToString(DateTimeMo...</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFormula" />
+    </Node>
+    <Node ToolID="3">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BlockUntilDone.BlockUntilDone">
+        <Position x="342" y="54" />
+      </GuiSettings>
+      <Properties>
+        <Configuration />
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBlockUntilDone" />
+    </Node>
+    <Node ToolID="4">
+      <GuiSettings Plugin="JupyterCode">
+        <Position x="462" y="42" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <WorkflowName>c:\users\pc\desktop\interdependent workflow for pdf output.yxmd</WorkflowName>
+          <JupyterProduction>false</JupyterProduction>
+          <vEnvName>designerbasetools_venv</vEnvName>
+          <DefaultVenv>1</DefaultVenv>
+          <productionModeScript />
+          <Port>63628</Port>
+          <JupyterGuidDir>b2ace4959395dea11c1421c4b2dcf562</JupyterGuidDir>
+          <JupyterGuidCopy />
+          <LastExecutedByEngineVersion>2023.1.1.123</LastExecutedByEngineVersion>
+          <Notebook><![CDATA[{"cells":[{"cell_type":"markdown","metadata":{"ayx":{"cell_css":"border: 3px solid #357; margin: 4px; background: #fbffff","contents_keyword":"Alteryx.help()","label":"info"}},"source":["Run `Alteryx.help()` for info about useful functions.  \n","i.e., `Alteryx.read(\"#1\")`, `Alteryx.write(df,1)`, `Alteryx.getWorkflowConstant(\"Engine.WorkflowDirectory\")`"]},{"cell_type":"code","execution_count":1,"metadata":{"ayx":{"cell_css":"border: 1px solid #58a; margin: 2px;","contents_keyword":"installPackages","label":"deps"}},"outputs":[],"source":["# List all non-standard packages to be imported by your \n","# script here (only missing packages will be installed)\n","from ayx import Package\n","#Package.installPackages(['pandas','numpy'])"]},{"cell_type":"code","execution_count":2,"metadata":{},"outputs":[],"source":["from ayx import Package\n","from ayx import Alteryx\n","import os\n","df= Alteryx.read(\"#1\")\n","outpath= df['Out Dir'].unique()\n","outpath= outpath[0]\n","outpath1= df['Out Dir1'].unique()\n","outpath1= outpath1[0]\n","if not os.path.isdir(outpath):\n","    os.makedirs(outpath)\n","if not os.path.isdir(outpath1):\n","    os.makedirs(outpath1)\n","import time \n","import shutil\n","input = df['In Path'].unique()\n","input = input[0]\n","output = df['Output Path'].unique()\n","output = output[0]\n","shutil.copy(input,output)\n","print(\"Copied\")\n","Alteryx.write(df,1)\n","    \n","\n"]},{"cell_type":"code","execution_count":null,"metadata":{},"outputs":[],"source":[]},{"cell_type":"code","execution_count":null,"metadata":{},"outputs":[],"source":[]},{"cell_type":"code","execution_count":null,"metadata":{},"outputs":[],"source":[]},{"cell_type":"code","execution_count":null,"metadata":{},"outputs":[],"source":[]},{"cell_type":"code","execution_count":null,"metadata":{},"outputs":[],"source":[]}],"metadata":{"kernelspec":{"display_name":"designerbasetools_venv","language":"python","name":"designerbasetools_venv"},"language_info":{"codemirror_mode":{"name":"ipython","version":3},"file_extension":".py","mimetype":"text/x-python","name":"python","nbconvert_exporter":"python","pygments_lexer":"ipython3","version":"3.8.5"}},"nbformat":4,"nbformat_minor":2}]]></Notebook>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxJupyterPluginEngine.dll" EngineDllEntryPoint="AlteryxJupyter" />
+    </Node>
+  </Nodes>
+  <Connections>
+    <Connection>
+      <Origin ToolID="1" Connection="Output" />
+      <Destination ToolID="2" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="2" Connection="Output" />
+      <Destination ToolID="3" Connection="Input" />
+    </Connection>
+    <Connection name="#1">
+      <Origin ToolID="3" Connection="Output" />
+      <Destination ToolID="4" Connection="Input" />
+    </Connection>
+  </Connections>
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <RunWithE2 value="True" />
+    <PredictiveToolsCodePage value="1252" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="False" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>Interdependent workflow for PDF output</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
+      <WorkflowId value="0fae6e93-1f08-4e6e-b714-8388f9a24ca8" />
+      <Telemetry>
+        <PreviousWorkflowId value="f95a4ce4-e3f2-40d4-9a4e-317aa42b318f" />
+        <OriginWorkflowId value="f95a4ce4-e3f2-40d4-9a4e-317aa42b318f" />
+      </Telemetry>
+      <PlatformWorkflowId value="" />
+    </MetaInfo>
+    <Events>
+      <Enabled value="True" />
+    </Events>
+  </Properties>
+</AlteryxDocument>
